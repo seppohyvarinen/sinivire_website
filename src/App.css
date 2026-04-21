@@ -1,5 +1,5 @@
 /* ── Reset & base ── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
 
 :root {
   --navy:    #0d1b2a;
@@ -9,12 +9,25 @@
   --text:    #1a2535;
   --muted:   #6b7a8d;
   --nav-h:   64px;
-  --font-head: 'DM Serif Display', Georgia, serif;
-  --font-body: 'DM Sans', system-ui, sans-serif;
+--font-head: 'DM Serif Display', serif;
+--font-body: 'Inter', sans-serif;
+--font-nav: 'DM Serif Display', serif;
+  --nav-h: clamp(80px, 14vw, 160px);
 }
 
-html { scroll-behavior: smooth; font-family: var(--font-body); color: var(--text); }
+body, main {
+  margin: 0;
+  padding: 0;
 
+}
+
+html, body {
+  scroll-behavior: smooth;
+  font-family: var(--font-body);
+  color: var(--text);
+  background: transparent;
+  min-height: 100%;
+}
 /* Google Fonts — add these two to your index.html <head>:
    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=DM+Serif+Display&display=swap" rel="stylesheet"> */
 
@@ -22,31 +35,35 @@ html { scroll-behavior: smooth; font-family: var(--font-body); color: var(--text
 .navbar {
   position: fixed;
   top: 0; left: 0; right: 0;
-  height: var(--nav-h);
+  height: calc(
+    var(--nav-h) +
+    clamp(50px, 5vw, 80px) +
+    clamp(180px, 8vw, 140px) * (1 - var(--arc-collapse, 0))
+  );
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0 1.25rem;
-  background: transparent;
-  transition: background 0.25s, box-shadow 0.25s;
+  background: transparent;        /* always transparent */
+  backdrop-filter: none;          /* no blur either */
   z-index: 100;
-    background: rgba(127, 170, 217, 0.96);
-  backdrop-filter: blur(8px);
+  pointer-events: none;           /* let clicks pass through the empty space */
 }
 
+/* Remove the scrolled state background entirely */
 .navbar--scrolled {
-  background: rgba(85, 140, 199, 0.96);
-  backdrop-filter: blur(8px);
-  box-shadow: 0 1px 0 rgba(255,255,255,0.06);
+  background: transparent;
+  backdrop-filter: none;
+  box-shadow: none;
 }
 
+/* Re-enable pointer events only on the actual interactive children */
+.navbar__links-wrap,
+.burger,
 .navbar__logo {
-  position: absolute;
-  left: 1.25rem;
-  font-family: var(--font-head);
-  font-size: 1.15rem;
-  color: #fff;
-  letter-spacing: 0.01em;
+    border: none;        /* add this */
+  box-shadow: none;
+  pointer-events: auto;
 }
 
 .navbar__links-wrap {
@@ -56,75 +73,114 @@ html { scroll-behavior: smooth; font-family: var(--font-body); color: var(--text
   justify-content: center;
 }
 
+/* ── Navbar links wrap ── */
 .navbar__links {
   list-style: none;
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
+  flex-wrap: nowrap;       /* keep all on one row always */
+  align-items: flex-start; /* let translateY push edges down from the top */
+  gap: clamp(0.25rem, 1vw, 0.75rem);
   justify-content: center;
 }
 
+/* ── Nav button — fluid sizing, no layout breakpoints ── */
 .nav-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  min-width: 7rem;
-  min-height: 4.5rem;
-  padding: 0.95rem 1.2rem;
-  background-color: hwb(0 100% 0% / 0);
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-  color: #000000;
-  text-align: center;
-  font-family: var(--font-body);
-  font-size: 1rem;
-  font-weight: 700;
+  width: clamp(140px, 20vw, 300px);
+  height: clamp(110px, 19vw, 300px);
+  padding: 0;
+  background: none;
   border: none;
   cursor: pointer;
-  border-radius: 1.75rem;
-  overflow: hidden;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
-  transition: transform 0.2s, background-color 0.2s, color 0.2s;
+  overflow: visible;
+  text-shadow: 0 1px 2px rgba(33, 150, 252, 0.45);
+  transition: transform 0.2s, color 0.2s;
+  color: #000000;
+  font-family: var(--font-body);
+  font-size: clamp(0.65rem, 1.6vw, 1rem);
+  font-weight: 700;
+}
+.nav-btn {
+  font-family: var(--font-nav);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: clamp(0.65rem, 1.4vw, 0.95rem);
+}
+
+.nav-btn__bubble {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
 }
 
 .nav-btn span {
   position: relative;
   z-index: 1;
 }
-.nav-btn--active { color: #44d0ff;}
-.nav-btn:hover { color: #fff !important; }
+
+
+
+
+.nav-btn--active         { color: #44d0ff; }
+.nav-btn--active[data-pos="edge"] { color: #44d0ff; } /* keep active color on edges */
+.nav-btn:hover           { color: #fff !important; }
+
+/* ── Remove the old @media (max-width: 640px) block entirely ── */
 
 
 /* ── Sections ── */
 .section {
+  margin: 0;
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
+
 }
+
+
 
 .section__inner {
   max-width: 720px;
   width: 100%;
-  padding: 6rem 2rem;
+  padding: 1rem 1rem;
+  text-align: center;   /* add this */
 }
 
 .section--hero {
-
+  background: transparent;
+  flex-direction: column;      /* stack children vertically */
+  gap: 0px;              /* space between figure and text */
+  padding-top: calc(var(--nav-h) + 2rem);  /* clear the navbar */
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 40px;
 }
 
-.section--light { background: var(--off); }
-.section--dark  { background: var(--ink); }
+.section--light { background: transparent; }
+.section--dark  { background: transparent; }
 
 /* ── Hero ── */
 .hero__headline {
   font-family: var(--font-head);
-  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-size: clamp(0.5rem,1vw, 2rem);
   line-height: 1.1;
   color: #160303;
-  margin-bottom: 2rem;
+
+}
+.hero__headline {
+  font-family: var(--font-head);
+  font-size: clamp(0.5rem, 3vw, 2rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  transform: translateY(clamp(-60px, -6vh, -20px));
 }
 
 .cta-btn {
@@ -158,6 +214,10 @@ html { scroll-behavior: smooth; font-family: var(--font-body); color: var(--text
   line-height: 1.75;
   color: var(--muted);
   max-width: 56ch;
+  margin: 0 auto;   /* add this */
+}
+.section--light {
+  margin: 0 auto;
 }
 
 .section--dark .section__body { color: rgba(255,255,255,0.55); }
@@ -167,9 +227,388 @@ html { scroll-behavior: smooth; font-family: var(--font-body); color: var(--text
   color: var(--accent);
   text-underline-offset: 3px;
 }
+/* ── Hero scene ── */
+.hero-scene {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
-/* ── Responsive ── */
-@media (max-width: 640px) {
-  .navbar { padding: 0 1.25rem; }
-  .nav-btn { font-size: 0.8rem; padding: 5px 10px; }
+  min-height: 70vh;
+  container-type: inline-size;
+  container-name: hero;
+}
+
+.hero-figure-wrap {
+  position: relative;
+  width: clamp(120px, 40vw, 380px);
+  max-height: clamp(120px, 55vh, 600px);
+  container-type: inline-size;   /* ← add this, cqw resolves against this element */
+  --head-top: 30%;
+  --head-cx: 58%;
+}
+
+.hero-figure {
+  width: 100%;
+  height: 100%;
+  max-height: clamp(120px, 55vh, 600px);
+  object-fit: contain;         /* never crops, just shrinks */
+  object-position: top;        /* keep head visible if it clips at bottom */
+  display: block;
+  border-radius: 1rem;
+}
+
+/* Minibubbles are absolutely positioned relative to the head centre */
+.minibubble {
+  position: absolute;
+  /* Anchor to head centre (50% x, ~28% y) */
+  left: calc(var(--head-cx) + var(--bx, 0px));
+  top:  calc(var(--head-top) + var(--by, 0px));
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  object-fit: contain;
+  /* Gentle float animation */
+  animation: bubble-float 3s ease-in-out infinite;
+}
+
+.minibubble--sm {
+  width: 100px;
+  height: auto;
+  animation-delay: 0.4s;
+}
+
+.minibubble--lg {
+  width: clamp(48px, 5vw, 100px);
+  height: auto;
+  animation-delay: 0s;
+}
+
+
+@keyframes bubble-float {
+  0%, 100% { transform: translate(-50%, -50%) translateY(0); }
+  50%       { transform: translate(-50%, -50%) translateY(-3px); }
+}
+
+
+
+.minibubble:nth-child(2)  { animation-delay: 0.0s; }
+.minibubble:nth-child(3)  { animation-delay: 0.3s; }
+.minibubble:nth-child(4)  { animation-delay: 0.6s; }
+.minibubble:nth-child(5)  { animation-delay: 0.9s; }
+.minibubble:nth-child(6)  { animation-delay: 1.2s; }
+.minibubble:nth-child(7)  { animation-delay: 1.5s; }
+.minibubble:nth-child(8)  { animation-delay: 1.8s; }
+.minibubble:nth-child(9)  { animation-delay: 2.1s; }
+.minibubble:nth-child(10) { animation-delay: 2.4s; }
+.minibubble:nth-child(11) { animation-delay: 2.7s; }
+
+
+@media (prefers-reduced-motion: reduce) {
+  .minibubble { animation: none; }
+} 
+
+
+/* ── Burger — now wrapped in a bubble image ── */
+.burger {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: clamp(80px, 22vw, 150px);
+  height: clamp(80px, 18vw, 120px);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 110;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* bubble image is nav-btn__bubble, already absolute inset:0 */
+}
+
+/* The three bars sit on top of the bubble image */
+.burger__bars {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 22px;
+  height: 15px;
+}
+
+.burger__bars span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: #000;
+  border-radius: 2px;
+  transition: transform 0.25s ease, opacity 0.2s ease;
+  transform-origin: center;
+}
+
+/* Animate into × when open */
+.burger--open .burger__bars span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.burger--open .burger__bars span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.burger--open .burger__bars span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+/* ── Centre anchor: fixed Y, never moves ── */
+.nav-btn[data-pos="2"] {
+  transform: translateY(20px);   /* ← single fixed value, tune this one number */
+}
+
+/* ── Arc positions: floor + arc portion, crowd inward on X via negative margins ── */
+.nav-btn[data-pos="0"] {
+  transform: translateY(calc(
+    20px + clamp(120px, 10vh, 160px) * (1 - var(--arc-collapse, 0))
+  ));
+  margin-right: clamp(-60px, -4vw, -10px);  /* crowd inward */
+}
+.nav-btn[data-pos="1"] {
+  transform: translateY(calc(
+    20px + clamp(60px, 5vh, 80px) * (1 - var(--arc-collapse, 0))
+  ));
+  margin-right: clamp(-30px, -2vw, -5px);   /* subtler crowd */
+}
+.nav-btn[data-pos="3"] {
+  transform: translateY(calc(
+    20px + clamp(60px, 5vh, 80px) * (1 - var(--arc-collapse, 0))
+  ));
+  margin-left: clamp(-30px, -2vw, -5px);
+}
+.nav-btn[data-pos="4"] {
+  transform: translateY(calc(
+    20px + clamp(120px, 10vh, 160px) * (1 - var(--arc-collapse, 0))
+  ));
+  margin-left: clamp(-60px, -4vw, -10px);
+}
+
+/* ── Navbar height: driven by the edge arc depth ── */
+.navbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: calc(
+    var(--nav-h) + 20px +
+    clamp(120px, 10vh, 160px) * (1 - var(--arc-collapse, 0))
+  );
+  display: flex;
+  align-items: flex-start;      /* children anchor to top, not centre */
+  justify-content: center;
+  padding: 0 1.25rem;
+  background: transparent;
+  backdrop-filter: none;
+  z-index: 100;
+  pointer-events: none;
+}
+
+/* ── Mobile dropdown menu ── */
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  /* starts collapsed above the viewport */
+  max-height: 0;
+  overflow: hidden;
+  background: rgba(13, 27, 42, 0.97);
+  backdrop-filter: blur(12px);
+  z-index: 99;
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mobile-menu--open {
+  /* tall enough for all items; scrolls if needed */
+  max-height: 100dvh;
+}
+
+.mobile-menu__list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* push below the navbar */
+  padding-top: calc(var(--nav-h) + 1rem);
+  padding-bottom: 2rem;
+  gap: 0;
+}
+
+/* ── Mobile nav button — bubble wrapper, stacked vertically ── */
+.mobile-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: clamp(140px, 55vw, 220px);
+  height: clamp(140px, 55vw, 220px);
+  background: none;
+  border: none;
+  cursor: pointer;
+  overflow: visible;
+  color: #000;
+  font-family: var(--font-body);
+  font-size: clamp(0.8rem, 3.5vw, 1.1rem);
+  font-weight: 700;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+  /* slide-in stagger via --i CSS var set in JSX */
+  opacity: 0;
+  transform: translateY(-16px);
+  transition:
+    opacity 0.3s ease calc(var(--i, 0) * 0.07s),
+    transform 0.3s ease calc(var(--i, 0) * 0.07s),
+    color 0.2s;
+}
+
+/* Reveal when menu is open */
+.mobile-menu--open .mobile-nav-btn {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.mobile-nav-btn .nav-btn__bubble {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.mobile-nav-btn span {
+  position: relative;
+  z-index: 1;
+}
+
+.mobile-nav-btn:hover { color: #fff !important; }
+.mobile-nav-btn.nav-btn--active { color: #44d0ff; }
+
+/* Tighten vertical overlap so the list isn't too long */
+.mobile-menu__list li {
+  margin-top: -2.5rem;
+}
+.mobile-menu__list li:first-child {
+  margin-top: 0;
+}
+
+/* Portrait-mode navbar: keep it slim, no arc overflow */
+.navbar--portrait {
+  height: var(--nav-h);
+  overflow: visible;
+}.mobile-menu {
+  pointer-events: none;        /* closed state — pass through */
+}
+
+.mobile-menu--open {
+  pointer-events: auto;        /* open state — capture clicks */
+  max-height: 100dvh;
+}
+
+/* Also ensure the list items themselves are always clickable when open */
+.mobile-menu--open .mobile-nav-btn {
+  pointer-events: auto;
+}
+
+.therapist-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.therapist-card img {
+  width: 80%;
+  max-width: 200px;       /* prevents giant images on desktop */
+  aspect-ratio: 1 / 1;    /* forces square */
+  object-fit: cover;      /* crops nicely */
+  border-radius: 50%;     /* makes it a circle */
+  
+  /* optional polish */
+  margin-bottom: 1rem;
+}
+
+
+
+
+body:not(.is-portrait) section {
+  scroll-margin-top: 30vh; /* adjust as needed for the navbar height */
+}
+.section-divider {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  overflow: hidden;
+  display: block;
+ 
+
+}
+
+.section-divider__img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  z-index: 99;
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 15%,
+    black 85%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 15%,
+    black 85%,
+    transparent 100%
+  );
+}
+
+.site-background {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+
+  background: linear-gradient(
+    to right,
+    #2babf0 0%,
+    #82e0ff 5%,
+    #82e0ff 95%,
+    #2babf0 100%
+  );
+}
+
+/* 1. The Container: Space the therapists apart */
+.therapists {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(2rem, 5vw, 4rem); /* Responsive horizontal and vertical gap */
+  margin-top: 3rem;           /* Distance from the introductory text */
+}
+
+/* 2. Individual Card: Standardizing width */
+.therapist-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 280px;           /* Prevents the text from getting too wide */
+}
+
+/* 3. The Name: Bring it closer to the description */
+.therapist-card h3 {
+  font-family: var(--font-head);
+  margin-top: 0.5rem;         /* Space between image and name */
+  margin-bottom: 0.15rem;     /* Tight gap between name and description */
+  font-size: 1.25rem;
+}
+
+/* 4. The Description: Remove default browser margins */
+.therapist-card p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--muted);
 }

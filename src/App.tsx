@@ -1,27 +1,46 @@
 import { useEffect, useState } from "react"
-import { client } from "./sanityClient"
+import { client } from "./sanityClient.ts"
 import "./App.css"
 import logo from "./assets/bubble.png"
+import { HeroBubbles } from "./components/HeroBubbles"
+import { SectionDivider } from "./components/SectionDivider"
+import { Background } from "./components/BackGround.tsx"
 
-type SectionId = "hero" | "about" | "services" | "contact"
+type SectionId = "hero" | "about" | "services" | "contact" | "research"
 
 interface NavLink {
   label: string
   id: SectionId
 }
 
+type Therapist = {
+  name?: string
+  image?: any
+  description?: string
+}
+
+type Service = {
+  name?: string
+  description?: string
+  image?: any
+}
+
 interface PageContent {
   hero?: string
-  about?: string
-  services?: string
+  about?: {
+    text?: string
+    therapists?: Therapist[]
+  }
+  services?: Service[]
   contact?: string
 }
 
 const NAV_LINKS: NavLink[] = [
-  { label: "Home",     id: "hero" },
-  { label: "About",    id: "about" },
-  { label: "Services", id: "services" },
-  { label: "Contact",  id: "contact" },
+  { label: "Tervetuloa",   id: "hero"     },
+  { label: "Keitä olemme?", id: "about"   },
+  { label: "Palvelut",     id: "services" },
+  { label: "Tutkimus",     id: "research" },
+  { label: "Yhteystiedot", id: "contact"  },
 ]
 
 function scrollTo(id: SectionId) {
@@ -29,111 +48,226 @@ function scrollTo(id: SectionId) {
 }
 
 export default function App() {
-  const [content, setContent] = useState<PageContent | null>(null)
-  const [active, setActive]   = useState<SectionId>("hero")
-  const [scrolled, setScrolled] = useState<boolean>(false)
+  const [content, setContent]   = useState<PageContent | null>(null)
+  const [active, setActive]     = useState<SectionId>("hero")
+  const [scrolled, setScrolled] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [isPortrait, setIsPortrait] = useState(false)
+
+  // Detect portrait phone
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 768px) and (orientation: portrait)")
+    const update = () => {
+      setIsPortrait(mq.matches)
+      if (!mq.matches) setMenuOpen(false)   // close menu when rotating
+    }
+    update()
+    mq.addEventListener("change", update)
+    return () => mq.removeEventListener("change", update)
+  }, [])
 
   // Fetch from Sanity
   useEffect(() => {
     client
-      .fetch<PageContent>(`*[_type == "page"][0]{ hero, about, services, contact }`)
-          .then((data) => {
-      console.log("SANITY DATaA:", data)
-      setContent(data)
-    })
+      .fetch<PageContent>(`
+  *[_type == "page"][0]{
+    hero,
+    about{
+      text,
+      therapists[]{
+        name,
+        description,
+        image{
+          asset->{
+            url
+          }
+        }
+      }
+    },
+    services[]{
+      name,
+      description,
+      image{
+        asset->{
+          url
+        }
+      }
+    },
+    contact
+  }
+`)
+      .then((data) => {
+        console.log("SANITY DATA:", data)
+        setContent(data)
+      })
       .catch(console.error)
   }, [])
 
+  useEffect(() => {
+  document.body.classList.toggle("is-portrait", isPortrait)
+}, [isPortrait])
+
   // Sticky nav shadow
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 10)
-    window.addEventListener("scroll", onScroll)
-    return () => window.removeEventListener("scroll", onScroll)
-  }, [])
+// Sticky nav shadow + arc collapse on scroll
+useEffect(() => {
+  const onScroll = () => {
+    const y = window.scrollY
+    setScrolled(y > 10)
 
-  // Active nav highlight
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            setActive(e.target.id as SectionId)
-          }
-        })
-      },
-      { threshold: 0.5 }
-    )
+    // Collapse arc over the first 120px of scroll
+    const progress = Math.min(y / 120, 1)
+    document.documentElement.style.setProperty("--arc-collapse", String(progress))
+  }
+  window.addEventListener("scroll", onScroll, { passive: true })
+  return () => window.removeEventListener("scroll", onScroll)
+}, [])
 
-    NAV_LINKS.forEach(({ id }) => {
-      const el = document.getElementById(id)
-      if (el) observer.observe(el)
-    })
+  // Active nav highlight via IntersectionObserver
+useEffect(() => {
+  if (!content) return
 
-    return () => observer.disconnect()
-  }, [])
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) setActive(e.target.id as SectionId)
+      })
+    },
+    { threshold: 0.5 }
+  )
+
+  NAV_LINKS.forEach(({ id }) => {
+    const el = document.getElementById(id)
+    if (el) observer.observe(el)
+  })
+
+  return () => observer.disconnect()
+}, [content])
+
+  function handleNavClick(id: SectionId) {
+    scrollTo(id)
+    setMenuOpen(false)
+  }
 
   return (
     <>
       {/* Navbar */}
-      <nav className={`navbar ${scrolled ? "navbar--scrolled" : ""}`}>
-        <div className="navbar__logo">Sinivire</div>
-        <div className="navbar__links-wrap">
-          <ul className="navbar__links">
-            {NAV_LINKS.map(({ label, id }) => (
-              <li key={id}>
-                <button
-                  className={`nav-btn ${active === id ? "nav-btn--active" : ""}`}
-                  onClick={() => scrollTo(id)}
-                  style={{ backgroundImage: `url(${logo})` }}
-                >
-                  <span>{label}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
+      <nav className={`navbar ${scrolled ? "navbar--scrolled" : ""} ${isPortrait ? "navbar--portrait" : ""}`}>
+        <div className="navbar__logo" />
+
+        {isPortrait ? (
+          /* ── Portrait phone: burger + dropdown ── */
+          <>
+{/* Replace the existing burger button with this */}
+<button
+  className={`burger ${menuOpen ? "burger--open" : ""}`}
+  onClick={() => setMenuOpen((o) => !o)}
+  aria-label="Toggle menu"
+  aria-expanded={menuOpen}
+>
+  <img src={logo} className="nav-btn__bubble" alt="" />
+  <span className="burger__bars">
+    <span /><span /><span />
+  </span>
+</button>
+
+            <div className={`mobile-menu ${menuOpen ? "mobile-menu--open" : ""}`}>
+              <ul className="mobile-menu__list">
+                {NAV_LINKS.map(({ label, id }, i) => (
+                  <li key={id} style={{ "--i": i } as React.CSSProperties}>
+                    <button
+                      className={`mobile-nav-btn ${active === id ? "nav-btn--active" : ""}`}
+                      onClick={() => handleNavClick(id)}
+                    >
+                      <img src={logo} className="nav-btn__bubble" alt="" />
+                      <span>{label}</span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </>
+        ) : (
+          /* ── Landscape / desktop: existing arc nav ── */
+          <div className="navbar__links-wrap">
+            <ul className="navbar__links">
+              {NAV_LINKS.map(({ label, id }, i) => (
+                <li key={id}>
+                  <button
+                    className={`nav-btn ${active === id ? "nav-btn--active" : ""}`}
+                    onClick={() => handleNavClick(id)}
+                    data-pos={i}
+                  >
+                    <img src={logo} className="nav-btn__bubble" alt="" />
+                    <span>{label}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </nav>
 
       {/* Sections */}
       <main>
-        <section id="hero" className="section section--hero">
-          <div className="section__inner">
-            <h1 className="hero__headline">
-              {content?.hero ?? "Mitä on mielessä?"}
-            </h1>
-            <button className="cta-btn" onClick={() => scrollTo("contact")}>
-              Get in touch
-            </button>
-          </div>
-        </section>
+        <Background />
+<section id="hero" className="section section--hero">
+  <HeroBubbles />
+  <div className="section__inner">
+    <p className="hero__headline">
+      {content?.hero ?? "Sinivire Oy - Musiikkiterapian ammattilainen"}
+    </p>
+  </div>
+</section>
+ <SectionDivider />
+<section id="about" className="section section--light">
+ 
+  <div className="section__inner">
+    <h2 className="section__title">Terapeuttimme</h2>
 
-        <section id="about" className="section section--light">
-          <div className="section__inner">
-            <h2 className="section__title">About us</h2>
-            <p className="section__body">
-              {content?.about ?? "Loading…"}
-            </p>
-          </div>
-        </section>
+    <p className="section__body">
+      {content?.about?.text ?? ""}
+    </p>
 
-        <section id="services" className="section section--dark">
-          <div className="section__inner">
-            <h2 className="section__title">Services</h2>
-            <p className="section__body">
-              {content?.services ?? "Loading…"}
-            </p>
-          </div>
-        </section>
+    <div className="therapists">
+      {content?.about?.therapists?.map((t, i) => (
+        <div key={i} className="therapist-card">
+          {t.image?.asset?.url && (
+            <img src={t.image.asset.url} alt={t.name} />
+          )}
+          <h3>{t.name}</h3>
+          <p>{t.description}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+ <SectionDivider />
+
+<section id="services" className="section section--dark">
+  <div className="section__inner">
+    <h2 className="section__title">Services</h2>
+
+    <div className="services">
+      {content?.services?.map((s, i) => (
+        <div key={i} className="service-card">
+          {s.image?.asset?.url && (
+            <img src={s.image.asset.url} alt={s.name} />
+          )}
+          <h3>{s.name}</h3>
+          <p>{s.description}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+ <SectionDivider />
 
         <section id="contact" className="section section--light">
           <div className="section__inner">
-            <h2 className="section__title">Contact</h2>
+            <h2 className="section__title">Yhteystiedot</h2>
             <p className="section__body">
-              Reach us at{" "}
-              <a
-                href={`mailto:${content?.contact ?? ""}`}
-                className="contact-link"
-              >
+              
+              <a href={`mailto:${content?.contact ?? ""}`} className="contact-link">
                 {content?.contact ?? "Loading…"}
               </a>
             </p>
