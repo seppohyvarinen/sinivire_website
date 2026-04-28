@@ -612,23 +612,24 @@ body:not(.is-portrait) section {
   line-height: 1.5;
   color: var(--muted);
 }
-
 @media (max-width: 768px) and (orientation: portrait) {
-  .section--hero {
-    padding-top: calc(var(--nav-h) + 0.25rem); /* was + 2rem, pull it up */
-    justify-content: flex-start;               /* don't center vertically */
+  /* your existing rules stay as-is (target: < 380px) */
+
+  @media (min-width: 380px) {
+    .hero-scene {
+      margin-top: -3rem;  /* raise it a bit more for mid-width portrait */
+    }
+    .hero__headline {
+      transform: translateY(clamp(-100px, -10vw, -40px));
+    }
   }
 
-  .hero-scene {
-    margin-top: -1rem;   /* nudge the whole scene up */
-  }
-
-  .hero-figure-wrap {
-    max-height: clamp(200px, 55vw, 340px);   /* shrink height so it fits higher */
-  }
-
-  .hero__headline {
-    transform: translateY(clamp(-80px, -8vw, -30px)); /* pull text up more aggressively */
-    font-size: clamp(0.8rem, 4vw, 1.4rem);            /* slightly larger on mobile */
+  @media (min-width: 650px) {
+    .hero-scene {
+      margin-top: 1rem;   /* lower it back down for wide portrait (tablets) */
+    }
+    .hero__headline {
+      transform: translateY(clamp(-60px, -6vw, -20px));
+    }
   }
 }
