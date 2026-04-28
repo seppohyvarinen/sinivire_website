@@ -709,6 +709,6 @@ body:not(.is-portrait) section {
 }
 @media (min-height: 950px) {
   .mobile-menu__list li {
-    margin-top: -1rem;  /* less negative = more spacing */
+    margin-top: -0.8rem;  /* less negative = more spacing */
   }
 }
