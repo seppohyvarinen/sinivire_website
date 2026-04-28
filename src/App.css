@@ -580,8 +580,8 @@ body:not(.is-portrait) section {
   background: linear-gradient(
     to right,
     #79c1ff 0%,
-    #d5fcff 5%,
-    #d5fcff 95%,
+    #ecfff7 5%,
+    #ecfff7 95%,
     #79c1ff 100%
   );
 }
