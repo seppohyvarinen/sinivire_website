@@ -483,8 +483,8 @@ html, body {
 .mobile-nav-btn.nav-btn--active { color: #44d0ff; }
 
 /* Tighten vertical overlap so the list isn't too long */
-.mobile-menu__list li {
-  margin-top: -2.5rem;
+.mobile-menu__list {
+  padding-top: calc(var(--nav-h) * 0.5); /* was var(--nav-h) + 1rem */
 }
 .mobile-menu__list li:first-child {
   margin-top: 0;
@@ -664,4 +664,38 @@ body:not(.is-portrait) section {
   object-fit: cover;
   border-radius: 50%;
   margin-bottom: 1rem;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal {
+  background: #fff;
+  border-radius: 1rem;
+  padding: 2rem 2.5rem;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  position: relative;
+  font-family: var(--font-head);
+  font-size: 1.25rem;
+}
+
+.modal button {
+  position: absolute;
+  top: 0.75rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  color: var(--muted);
 }

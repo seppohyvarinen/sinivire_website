@@ -53,6 +53,7 @@ export default function App() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [isPortrait, setIsPortrait] = useState(false)
+  const [researchOpen, setResearchOpen] = useState(false)
 
   // Detect portrait phone
   useEffect(() => {
@@ -143,10 +144,15 @@ useEffect(() => {
   return () => observer.disconnect()
 }, [content])
 
-  function handleNavClick(id: SectionId) {
-    scrollTo(id)
+function handleNavClick(id: SectionId) {
+  if (id === "research") {
+    setResearchOpen(true)
     setMenuOpen(false)
+    return
   }
+  scrollTo(id)
+  setMenuOpen(false)
+}
 
   return (
     <>
@@ -278,6 +284,18 @@ useEffect(() => {
           </div>
         </section>
       </main>
+
+      {researchOpen && (
+  <div
+    className="modal-backdrop"
+    onClick={() => setResearchOpen(false)}
+  >
+    <div className="modal" onClick={e => e.stopPropagation()}>
+      <p>Tutkimusdata tänne</p>
+      <button onClick={() => setResearchOpen(false)}>✕</button>
+    </div>
+  </div>
+)}
     </>
   )
 }
