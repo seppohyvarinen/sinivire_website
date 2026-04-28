@@ -707,3 +707,8 @@ body:not(.is-portrait) section {
   cursor: pointer;
   color: var(--muted);
 }
+@media (min-height: 950px) {
+  .mobile-menu__list li {
+    margin-top: -2rem;  /* less negative = more spacing */
+  }
+}
