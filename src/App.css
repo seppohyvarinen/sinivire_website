@@ -465,6 +465,9 @@ html, body {
   transform: translateY(0);
 }
 
+.mobile-menu--open {
+  max-height: 100dvh;  /* this stays, keeps backdrop full screen */
+}
 .mobile-nav-btn .nav-btn__bubble {
   position: absolute;
   inset: 0;
