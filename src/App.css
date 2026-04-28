@@ -658,8 +658,9 @@ body:not(.is-portrait) section {
   color: rgba(255, 255, 255, 0.65);
 }
 .section--dark .therapist-card img {
+    width: 80%;
   max-width: 200px;
-  width: 80%;
+
   aspect-ratio: 1 / 1;
   object-fit: cover;
   border-radius: 50%;
