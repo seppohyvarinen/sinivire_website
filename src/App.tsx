@@ -97,7 +97,7 @@ export default function App() {
   }
 `)
       .then((data) => {
-        console.log("SANITY DATA:", data)
+        console.log("SANITY DATAA:", data)
         setContent(data)
       })
       .catch(console.error)
@@ -245,11 +245,15 @@ useEffect(() => {
 
 <section id="services" className="section section--dark">
   <div className="section__inner">
-    <h2 className="section__title">Services</h2>
+    <h2 className="section__title">Palvelut</h2>
 
-    <div className="services">
+    <p className="section__body">
+      {/* optional intro text if you add it to schema later */}
+    </p>
+
+    <div className="therapists">  {/* reuse the same grid class */}
       {content?.services?.map((s, i) => (
-        <div key={i} className="service-card">
+        <div key={i} className="therapist-card">  {/* reuse card class */}
           {s.image?.asset?.url && (
             <img src={s.image.asset.url} alt={s.name} />
           )}
