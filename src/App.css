@@ -715,7 +715,7 @@ body:not(.is-portrait) section {
 
 /* ── Section background images ── */
 .section--hero {
-  background-image: url('/1.heic');
+  background-image: url('/3.heic');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
