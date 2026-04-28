@@ -712,3 +712,33 @@ body:not(.is-portrait) section {
     margin-top: -0.4rem;  /* less negative = more spacing */
   }
 }
+
+/* ── Section background images ── */
+.section--hero {
+  background-image: url('/1.heic');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.section--light:nth-of-type(1),
+#about {
+  background-image: url('/2.heic');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+#services {
+  background-image: url('/3.heic');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+#contact {
+  background-image: url('/4.heic');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}

@@ -38,7 +38,7 @@ export function HeroBubbles() {
   return (
     <div className="hero-scene">
       <div className="hero-figure-wrap">
-        <img src={thinking} alt="A person thinking" className="hero-figure" />
+        
 
         {isPortrait && (
           <>
