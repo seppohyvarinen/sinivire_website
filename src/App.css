@@ -486,6 +486,10 @@ html, body {
 .mobile-menu__list {
   padding-top: calc(var(--nav-h) * 0.5); /* was var(--nav-h) + 1rem */
 }
+
+.mobile-menu__list li {
+  margin-top: -4rem;
+}
 .mobile-menu__list li:first-child {
   margin-top: 0;
 }
