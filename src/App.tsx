@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { client } from "./sanityClient.ts"
 import "./App.css"
-import logo from "./assets/bubble.png"
+import logo from "./assets/bubblez.png"
 import { HeroBubbles } from "./components/HeroBubbles"
 import { SectionDivider } from "./components/SectionDivider"
 import { Background } from "./components/BackGround.tsx"
@@ -111,14 +111,18 @@ export default function App() {
   // Sticky nav shadow
 // Sticky nav shadow + arc collapse on scroll
 useEffect(() => {
-  const onScroll = () => {
-    const y = window.scrollY
-    setScrolled(y > 10)
+const onScroll = () => {
+  const y = window.scrollY
+  setScrolled(y > 10)
 
-    // Collapse arc over the first 120px of scroll
-    const progress = Math.min(y / 120, 1)
-    document.documentElement.style.setProperty("--arc-collapse", String(progress))
-  }
+  // Start arc collapse earlier, but margin resets later
+  const arcProgress = Math.min(y / 120, 1)
+  document.documentElement.style.setProperty("--arc-collapse", String(arcProgress))
+
+  // Margin collapses only after 220px of scroll (text well gone by then)
+// Margin collapses only after 350px of scroll (bigger text needs more room)
+const marginProgress = Math.min(Math.max((y - 150) / 100, 0), 1)
+document.documentElement.style.setProperty("--nav-margin-collapse", String(marginProgress))}
   window.addEventListener("scroll", onScroll, { passive: true })
   return () => window.removeEventListener("scroll", onScroll)
 }, [])
@@ -157,8 +161,10 @@ function handleNavClick(id: SectionId) {
   return (
     <>
       {/* Navbar */}
-      <nav className={`navbar ${scrolled ? "navbar--scrolled" : ""} ${isPortrait ? "navbar--portrait" : ""}`}>
-        <div className="navbar__logo" />
+<nav className={`navbar ${scrolled ? "navbar--scrolled" : ""} ${isPortrait ? "navbar--portrait" : ""}`}>
+  <div className="navbar__logo" />
+
+
 
         {isPortrait ? (
           /* ── Portrait phone: burger + dropdown ── */
@@ -170,7 +176,7 @@ function handleNavClick(id: SectionId) {
   aria-label="Toggle menu"
   aria-expanded={menuOpen}
 >
-  <img src={logo} className="nav-btn__bubble" alt="" />
+  <span className="nav-btn__bubble" />
   <span className="burger__bars">
     <span /><span /><span />
   </span>
@@ -184,7 +190,7 @@ function handleNavClick(id: SectionId) {
                       className={`mobile-nav-btn ${active === id ? "nav-btn--active" : ""}`}
                       onClick={() => handleNavClick(id)}
                     >
-                      <img src={logo} className="nav-btn__bubble" alt="" />
+                      
                       <span>{label}</span>
                     </button>
                   </li>
@@ -203,7 +209,7 @@ function handleNavClick(id: SectionId) {
                     onClick={() => handleNavClick(id)}
                     data-pos={i}
                   >
-                    <img src={logo} className="nav-btn__bubble" alt="" />
+                    <span className="nav-btn__bubble" />
                     <span>{label}</span>
                   </button>
                 </li>
@@ -217,14 +223,19 @@ function handleNavClick(id: SectionId) {
       <main>
         <Background />
 <section id="hero" className="section section--hero">
-  <HeroBubbles />
+  <span className="navbar__company">
+
+    {!menuOpen && (
+      <>     <span className="navbar__company__name">Sinivire Oy</span>
+    <span className="navbar__company__sub">Musiikkiterapian ammattilainen</span></>
+    )}
+
+  </span>
   <div className="section__inner">
-    <p className="hero__headline">
-      {content?.hero ?? "Sinivire Oy - Musiikkiterapian ammattilainen"}
-    </p>
+    <p className="hero__headline">{content?.hero ?? ""}</p>
   </div>
 </section>
- <SectionDivider />
+
 <section id="about" className="section section--light">
  
   <div className="section__inner">
@@ -234,20 +245,22 @@ function handleNavClick(id: SectionId) {
       {content?.about?.text ?? ""}
     </p>
 
-    <div className="therapists">
-      {content?.about?.therapists?.map((t, i) => (
-        <div key={i} className="therapist-card">
-          {t.image?.asset?.url && (
-            <img src={t.image.asset.url} alt={t.name} />
-          )}
-          <h3>{t.name}</h3>
-          <p>{t.description}</p>
-        </div>
-      ))}
+<div className="therapists">
+  {content?.about?.therapists?.map((t, i) => (
+    <div key={i} className="therapist-card">
+      {t.image?.asset?.url && (
+        <img src={t.image.asset.url} alt={t.name} />
+      )}
+      <div className="therapist-card__text">
+        <h3>{t.name}</h3>
+        <p>{t.description}</p>
+      </div>
     </div>
+  ))}
+</div>
   </div>
 </section>
- <SectionDivider />
+
 
 <section id="services" className="section section--dark">
   <div className="section__inner">
@@ -257,20 +270,22 @@ function handleNavClick(id: SectionId) {
       {/* optional intro text if you add it to schema later */}
     </p>
 
-    <div className="therapists">  {/* reuse the same grid class */}
-      {content?.services?.map((s, i) => (
-        <div key={i} className="therapist-card">  {/* reuse card class */}
-          {s.image?.asset?.url && (
-            <img src={s.image.asset.url} alt={s.name} />
-          )}
-          <h3>{s.name}</h3>
-          <p>{s.description}</p>
-        </div>
-      ))}
+<div className="therapists">
+  {content?.services?.map((s, i) => (
+    <div key={i} className="therapist-card">
+      {s.image?.asset?.url && (
+        <img src={s.image.asset.url} alt={s.name} />
+      )}
+      <div className="therapist-card__text">
+        <h3>{s.name}</h3>
+        <p>{s.description}</p>
+      </div>
     </div>
+  ))}
+</div>
   </div>
 </section>
- <SectionDivider />
+
 
         <section id="contact" className="section section--light">
           <div className="section__inner">

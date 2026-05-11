@@ -2,23 +2,16 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
 
 :root {
-  --navy:    #0d1b2a;
-  --ink:     #1a2535;
-  --off:     #f5f4f0;
-  --accent:  #e85a2a;
-  --text:    #1a2535;
-  --muted:   #6b7a8d;
-  --nav-h:   64px;
---font-head: 'DM Serif Display', serif;
---font-body: 'Inter', sans-serif;
---font-nav: 'DM Serif Display', serif;
-  --nav-h: clamp(80px, 14vw, 160px);
-}
-
-body, main {
-  margin: 0;
-  padding: 0;
-
+  --navy:     #0d1b2a;
+  --ink:      #1a2535;
+  --off:      #f5f4f0;
+  --accent:   #e85a2a;
+  --text:     #1a2535;
+  --muted:    #6b7a8d;
+  --nav-h:    clamp(80px, 14vw, 160px);
+  --font-head: 'DM Serif Display', serif;
+  --font-body: 'Inter', sans-serif;
+  --font-nav:  'Cormorant Garamond', cursive;
 }
 
 html, body {
@@ -28,40 +21,44 @@ html, body {
   background: transparent;
   min-height: 100%;
 }
-/* Google Fonts — add these two to your index.html <head>:
-   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=DM+Serif+Display&display=swap" rel="stylesheet"> */
+
+/* ── Site background ── */
+.site-background {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    to right,
+    #79c1ff 0%,
+    #fafffd 5%,
+    #fafffd 95%,
+    #79c1ff 100%
+  );
+}
 
 /* ── Navbar ── */
 .navbar {
   position: fixed;
   top: 0; left: 0; right: 0;
   height: calc(
-    var(--nav-h) +
-    clamp(50px, 5vw, 80px) +
-    clamp(180px, 8vw, 140px) * (1 - var(--arc-collapse, 0))
+    var(--nav-h) + 20px +
+    clamp(120px, 10vh, 160px) * (1 - var(--arc-collapse, 0))
   );
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   padding: 0 1.25rem;
-  background: transparent;        /* always transparent */
-  backdrop-filter: none;          /* no blur either */
-  z-index: 100;
-  pointer-events: none;           /* let clicks pass through the empty space */
-}
-
-/* Remove the scrolled state background entirely */
-.navbar--scrolled {
   background: transparent;
   backdrop-filter: none;
-  box-shadow: none;
+  z-index: 100;
+  pointer-events: none;
 }
 
-/* Re-enable pointer events only on the actual interactive children */
+/* Re-enable pointer events only on interactive children */
 .navbar__links-wrap,
 .burger,
 .navbar__logo {
-    border: none;        /* add this */
+  border: none;
   box-shadow: none;
   pointer-events: auto;
 }
@@ -73,45 +70,203 @@ html, body {
   justify-content: center;
 }
 
-/* ── Navbar links wrap ── */
+/* Portrait-mode navbar */
+.navbar--portrait {
+  height: var(--nav-h);
+  overflow: visible;
+}
+
+/* ── Navbar links ── */
 .navbar__links {
   list-style: none;
   display: flex;
-  flex-wrap: nowrap;       /* keep all on one row always */
-  align-items: flex-start; /* let translateY push edges down from the top */
+  flex-wrap: nowrap;
+  align-items: flex-start;
   gap: clamp(0.25rem, 1vw, 0.75rem);
   justify-content: center;
+  margin-top: 5vh;
 }
 
-/* ── Nav button — fluid sizing, no layout breakpoints ── */
+/* ── Nav button ── */
+/* ── Nav button ── */
 .nav-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  width: clamp(140px, 20vw, 300px);
-  height: clamp(110px, 19vw, 300px);
-  padding: 0;
+  width: clamp(110px, 16vw, 200px);   /* narrower than before */
+  height: clamp(44px, 7vw, 72px);     /* flat pill height, not 300px */
+  padding: 0 1rem;
   background: none;
   border: none;
   cursor: pointer;
   overflow: visible;
-  text-shadow: 0 1px 2px rgba(33, 150, 252, 0.45);
-  transition: transform 0.2s, color 0.2s;
-  color: #000000;
-  font-family: var(--font-body);
-  font-size: clamp(0.65rem, 1.6vw, 1rem);
-  font-weight: 700;
-}
-.nav-btn {
   font-family: var(--font-nav);
+  font-size: clamp(1.1rem, 1.4vw, 1.6rem);
   font-weight: 600;
   letter-spacing: 0.04em;
-  text-transform: uppercase;
-  font-size: clamp(0.65rem, 1.4vw, 0.95rem);
+  color: #ffffff;
+  text-shadow:
+    -1px -1px 0 rgba(0,0,0,0.4),
+     1px -1px 0 rgba(0,0,0,0.4),
+    -1px  1px 0 rgba(0,0,0,0.4),
+     1px  1px 0 rgba(0,0,0,0.4);
+  transition: transform 0.4s ease-out, color 0.4s ease-out, scale 0.4s ease-out;
 }
 
+.nav-btn--active { color: #72d3ff; }
+.nav-btn:hover   { color: #a0fff7 !important; scale: 1.1; transition: transform 0.2s ease-out, scale 0.2s ease-out; z-index: 10; }
 .nav-btn__bubble {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  border-radius: 20px;                          /* pill */
+  background: rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1.5px solid rgba(255, 255, 255, 0.7);
+  box-shadow:
+    inset 0 2px 8px rgba(255, 255, 255, 0.55),
+    inset 0 -2px 6px rgba(180, 210, 240, 0.2),
+    0 4px 18px rgba(100, 160, 220, 0.15);
+  overflow: hidden;
+}
+
+
+
+/* remove the ::after cloud bump entirely */
+.nav-btn__bubble::after {
+  display: none;
+}
+
+
+/* ── Burger ── */
+.burger {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: clamp(110px, 16vw, 200px);   /* same as .nav-btn */
+  height: clamp(44px, 7vw, 72px);     /* same as .nav-btn */
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 110;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.burger__bars {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 22px;
+  height: 15px;
+}
+
+.burger__bars span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: #fff;                   /* white to match nav text */
+  border-radius: 2px;
+  transition: transform 0.25s ease, opacity 0.2s ease;
+  transform-origin: center;
+}
+
+.burger--open .burger__bars span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.burger--open .burger__bars span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.burger--open .burger__bars span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+/* ── Mobile menu ── */
+.mobile-menu {
+  position: fixed;
+  inset: 0;                        /* cover entire screen */
+  max-height: 0;
+  overflow: hidden;
+  background: rgba(74, 157, 246, 0.97);
+  opacity: 0.9;
+  backdrop-filter: blur(12px);
+  z-index: 99;
+  pointer-events: none;
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mobile-menu--open {
+  max-height: 100dvh;
+  pointer-events: auto;
+}
+
+.mobile-menu__list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;   /* ← spread links evenly */
+  height: 100dvh;                  /* ← fill full viewport height */
+  padding: 2rem 1rem;
+  gap: 0;
+}
+
+/* Remove all the margin hacks */
+.mobile-menu__list li {
+  margin-top: 0;
+}
+
+.mobile-menu__list li:first-child {
+  margin-top: 0;
+}
+
+@media (min-height: 950px) {
+  .mobile-menu__list li {
+    margin-top: -0.4rem;
+  }
+}
+
+/* ── Mobile nav button ── */
+.mobile-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: clamp(160px, 60vw, 260px);
+  height: clamp(48px, 12vw, 68px);   /* ← flat pill, not square */
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1.5px solid rgba(255, 255, 255, 0.5);
+  border-radius: 20px;               /* ← pill shape */
+  box-shadow:
+    inset 0 2px 8px rgba(255, 255, 255, 0.3),
+    0 4px 18px rgba(100, 160, 220, 0.15);
+  cursor: pointer;
+  color: #fff;
+  font-family: var(--font-nav);
+  font-size: clamp(1rem, 4vw, 1.3rem);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+  pointer-events: auto;
+  opacity: 0;
+  transform: translateY(-16px);
+  transition:
+    opacity 0.3s ease calc(var(--i, 0) * 0.07s),
+    transform 0.3s ease calc(var(--i, 0) * 0.07s),
+    color 0.2s;
+}
+
+.mobile-menu--open .mobile-nav-btn {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.mobile-nav-btn .nav-btn__bubble {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -120,69 +275,178 @@ html, body {
   pointer-events: none;
 }
 
-.nav-btn span {
+.mobile-nav-btn span {
   position: relative;
   z-index: 1;
 }
 
-
-
-
-.nav-btn--active         { color: #44d0ff; }
-.nav-btn--active[data-pos="edge"] { color: #44d0ff; } /* keep active color on edges */
-.nav-btn:hover           { color: #fff !important; }
-
-/* ── Remove the old @media (max-width: 640px) block entirely ── */
-
+.mobile-nav-btn:hover          { color: #fff !important; }
+.mobile-nav-btn.nav-btn--active { color: #44d0ff; }
 
 /* ── Sections ── */
 .section {
   margin: 0;
-  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
-
+  position: relative;
 }
 
-
-
 .section__inner {
+  margin-top: 10vh;
   max-width: 720px;
   width: 100%;
-  padding: 1rem 1rem;
-  text-align: center;   /* add this */
+  padding: 1rem;
+  text-align: center;
+  position: relative;
+  z-index: 2;
 }
 
 .section--hero {
-  background: transparent;
-  flex-direction: column;      /* stack children vertically */
-  gap: 0px;              /* space between figure and text */
-  padding-top: calc(var(--nav-h) + 2rem);  /* clear the navbar */
+  flex-direction: column;
+  gap: 0;
+  padding-top: calc(var(--nav-h) + 2rem);
   justify-content: center;
   align-items: center;
   padding-bottom: 40px;
 }
 
-.section--light { background: transparent; }
-.section--dark  { background: transparent; }
+.section--hero { 
+  background: 
+    linear-gradient(
+      to bottom, 
+      #79c1ff 0%, 
+      rgba(121,193,255,0.6) 6%, 
+      transparent 18%,        /* uneven top spill */
+      transparent 78%,        
+      rgba(121,193,255,0.4) 88%,
+      #79c1ff 100%
+    ),
+    url('/3.jpg') center / cover no-repeat; 
+}
+#about { 
+  background: 
+    linear-gradient(
+      to bottom, 
+      #79c1ff 0%, 
+      rgba(121,193,255,0.5) 4%, 
+      transparent 14%,
+      transparent 82%,
+      rgba(121,193,255,0.55) 91%,
+      #79c1ff 100%
+    ),
+    url('/1.jpg') center / cover no-repeat; 
+}
+#services { 
+  background: 
+    linear-gradient(
+      to bottom, 
+      #79c1ff 0%, 
+      rgba(121,193,255,0.7) 5%,
+      transparent 20%,        /* longer top fade */
+      transparent 75%,        /* earlier bottom fade */
+      rgba(121,193,255,0.45) 86%,
+      #79c1ff 100%
+    ),
+    url('/2.jpeg') center / cover no-repeat; 
+}
+#contact { 
+  background: 
+    linear-gradient(
+      to bottom, 
+      #79c1ff 0%, 
+      rgba(121,193,255,0.5) 3%,
+      transparent 12%,
+      transparent 85%,
+      rgba(121,193,255,0.6) 93%,
+      #79c1ff 100%
+    ),
+    url('/4.jpg') center / cover no-repeat; 
+}
+
+
+
+/* ── Section text ── */
+.section__title {
+  font-family: var(--font-nav);
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  line-height: 1.15;
+  margin-bottom: 1.25rem;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+  
+}
+
+.section--light .section__title { color: white; }
+.section--dark  .section__title { color: white; }
+
+.section__body {
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  color: var(--muted);
+  max-width: 56ch;
+  margin: 0 auto;
+}
+
+.section--dark .section__body { color: rgba(255, 255, 255, 0.55); }
+
+section {
+  scroll-margin-top: 0;
+}
 
 /* ── Hero ── */
-.hero__headline {
-  font-family: var(--font-head);
-  font-size: clamp(0.5rem,1vw, 2rem);
-  line-height: 1.1;
-  color: #160303;
-
+.hero-scene {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 70vh;
+  container-type: inline-size;
+  container-name: hero;
+  position: relative;
+  z-index: 2;
 }
+
+.hero-figure-wrap {
+  position: relative;
+  width: clamp(120px, 40vw, 380px);
+  max-height: clamp(120px, 55vh, 600px);
+  container-type: inline-size;
+  --head-top: 30%;
+  --head-cx: 58%;
+}
+
+.hero-figure {
+  width: 100%;
+  height: 100%;
+  max-height: clamp(120px, 55vh, 600px);
+  object-fit: contain;
+  object-position: top;
+  display: block;
+  border-radius: 1rem;
+}
+
 .hero__headline {
   font-family: var(--font-head);
   font-size: clamp(0.5rem, 3vw, 2rem);
   line-height: 1.1;
   letter-spacing: -0.02em;
+  color: #ffffff;
   transform: translateY(clamp(-60px, -6vh, -20px));
 }
 
+
+
+@keyframes bubble-float {
+  0%, 100% { transform: translate(-50%, -50%) translateY(0); }
+  50%       { transform: translate(-50%, -50%) translateY(-3px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .minibubble { animation: none; }
+}
+
+/* ── CTA button ── */
 .cta-btn {
   display: inline-block;
   background: var(--accent);
@@ -198,482 +462,100 @@ html, body {
 }
 .cta-btn:hover { opacity: 0.88; transform: translateY(-1px); }
 
-/* ── Section text ── */
-.section__title {
-  font-family: var(--font-head);
-  font-size: clamp(1.75rem, 4vw, 2.75rem);
-  line-height: 1.15;
-  margin-bottom: 1.25rem;
-}
-
-.section--light .section__title { color: var(--navy); }
-.section--dark  .section__title { color: #000000; }
-
-.section__body {
-  font-size: 1.0625rem;
-  line-height: 1.75;
-  color: var(--muted);
-  max-width: 56ch;
-  margin: 0 auto;   /* add this */
-}
-.section--light {
-  margin: 0 auto;
-}
-
-.section--dark .section__body { color: rgba(255,255,255,0.55); }
-
 /* ── Contact link ── */
 .contact-link {
   color: var(--accent);
   text-underline-offset: 3px;
 }
-/* ── Hero scene ── */
-.hero-scene {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
 
-  min-height: 70vh;
-  container-type: inline-size;
-  container-name: hero;
-}
-
-.hero-figure-wrap {
-  position: relative;
-  width: clamp(120px, 40vw, 380px);
-  max-height: clamp(120px, 55vh, 600px);
-  container-type: inline-size;   /* ← add this, cqw resolves against this element */
-  --head-top: 30%;
-  --head-cx: 58%;
-}
-
-.hero-figure {
-  width: 100%;
-  height: 100%;
-  max-height: clamp(120px, 55vh, 600px);
-  object-fit: contain;         /* never crops, just shrinks */
-  object-position: top;        /* keep head visible if it clips at bottom */
-  display: block;
-  border-radius: 1rem;
-}
-
-/* Minibubbles are absolutely positioned relative to the head centre */
-.minibubble {
-  position: absolute;
-  /* Anchor to head centre (50% x, ~28% y) */
-  left: calc(var(--head-cx) + var(--bx, 0px));
-  top:  calc(var(--head-top) + var(--by, 0px));
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  object-fit: contain;
-  /* Gentle float animation */
-  animation: bubble-float 3s ease-in-out infinite;
-}
-
-.minibubble--sm {
-  width: 100px;
-  height: auto;
-  animation-delay: 0.4s;
-}
-
-.minibubble--lg {
-  width: clamp(48px, 5vw, 100px);
-  height: auto;
-  animation-delay: 0s;
-}
-
-
-@keyframes bubble-float {
-  0%, 100% { transform: translate(-50%, -50%) translateY(0); }
-  50%       { transform: translate(-50%, -50%) translateY(-3px); }
-}
-
-
-
-.minibubble:nth-child(2)  { animation-delay: 0.0s; }
-.minibubble:nth-child(3)  { animation-delay: 0.3s; }
-.minibubble:nth-child(4)  { animation-delay: 0.6s; }
-.minibubble:nth-child(5)  { animation-delay: 0.9s; }
-.minibubble:nth-child(6)  { animation-delay: 1.2s; }
-.minibubble:nth-child(7)  { animation-delay: 1.5s; }
-.minibubble:nth-child(8)  { animation-delay: 1.8s; }
-.minibubble:nth-child(9)  { animation-delay: 2.1s; }
-.minibubble:nth-child(10) { animation-delay: 2.4s; }
-.minibubble:nth-child(11) { animation-delay: 2.7s; }
-
-
-@media (prefers-reduced-motion: reduce) {
-  .minibubble { animation: none; }
-} 
-
-
-/* ── Burger — now wrapped in a bubble image ── */
-.burger {
-  position: absolute;
-  right: 0.5rem;
-  top: 50%;
-  transform: translateY(-50%);
-  width: clamp(80px, 22vw, 150px);
-  height: clamp(80px, 18vw, 120px);
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  z-index: 110;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  /* bubble image is nav-btn__bubble, already absolute inset:0 */
-}
-
-/* The three bars sit on top of the bubble image */
-.burger__bars {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  width: 22px;
-  height: 15px;
-}
-
-.burger__bars span {
-  display: block;
-  width: 100%;
-  height: 2px;
-  background: #000;
-  border-radius: 2px;
-  transition: transform 0.25s ease, opacity 0.2s ease;
-  transform-origin: center;
-}
-
-/* Animate into × when open */
-.burger--open .burger__bars span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
-.burger--open .burger__bars span:nth-child(2) { opacity: 0; transform: scaleX(0); }
-.burger--open .burger__bars span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
-
-/* ── Centre anchor: fixed Y, never moves ── */
-.nav-btn[data-pos="2"] {
-  transform: translateY(20px);   /* ← single fixed value, tune this one number */
-}
-
-/* ── Arc positions: floor + arc portion, crowd inward on X via negative margins ── */
-.nav-btn[data-pos="0"] {
-  transform: translateY(calc(
-    20px + clamp(120px, 10vh, 160px) * (1 - var(--arc-collapse, 0))
-  ));
-  margin-right: clamp(-60px, -4vw, -10px);  /* crowd inward */
-}
-.nav-btn[data-pos="1"] {
-  transform: translateY(calc(
-    20px + clamp(60px, 5vh, 80px) * (1 - var(--arc-collapse, 0))
-  ));
-  margin-right: clamp(-30px, -2vw, -5px);   /* subtler crowd */
-}
-.nav-btn[data-pos="3"] {
-  transform: translateY(calc(
-    20px + clamp(60px, 5vh, 80px) * (1 - var(--arc-collapse, 0))
-  ));
-  margin-left: clamp(-30px, -2vw, -5px);
-}
-.nav-btn[data-pos="4"] {
-  transform: translateY(calc(
-    20px + clamp(120px, 10vh, 160px) * (1 - var(--arc-collapse, 0))
-  ));
-  margin-left: clamp(-60px, -4vw, -10px);
-}
-
-/* ── Navbar height: driven by the edge arc depth ── */
-.navbar {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  height: calc(
-    var(--nav-h) + 20px +
-    clamp(120px, 10vh, 160px) * (1 - var(--arc-collapse, 0))
-  );
-  display: flex;
-  align-items: flex-start;      /* children anchor to top, not centre */
-  justify-content: center;
-  padding: 0 1.25rem;
-  background: transparent;
-  backdrop-filter: none;
-  z-index: 100;
-  pointer-events: none;
-}
-
-/* ── Mobile dropdown menu ── */
-.mobile-menu {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  /* starts collapsed above the viewport */
-  max-height: 0;
-  overflow: hidden;
-  background: rgba(13, 27, 42, 0.97);
-  backdrop-filter: blur(12px);
-  z-index: 99;
-  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.mobile-menu--open {
-  /* tall enough for all items; scrolls if needed */
-  max-height: 100dvh;
-}
-
-.mobile-menu__list {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  /* push below the navbar */
-  padding-top: calc(var(--nav-h) + 1rem);
-  padding-bottom: 2rem;
-  gap: 0;
-}
-
-/* ── Mobile nav button — bubble wrapper, stacked vertically ── */
-.mobile-nav-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  width: clamp(140px, 55vw, 220px);
-  height: clamp(140px, 55vw, 220px);
-  background: none;
-  border: none;
-  cursor: pointer;
-  overflow: visible;
-  color: #000;
-  font-family: var(--font-body);
-  font-size: clamp(0.8rem, 3.5vw, 1.1rem);
-  font-weight: 700;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
-  /* slide-in stagger via --i CSS var set in JSX */
-  opacity: 0;
-  transform: translateY(-16px);
-  transition:
-    opacity 0.3s ease calc(var(--i, 0) * 0.07s),
-    transform 0.3s ease calc(var(--i, 0) * 0.07s),
-    color 0.2s;
-}
-
-/* Reveal when menu is open */
-.mobile-menu--open .mobile-nav-btn {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.mobile-menu--open {
-  max-height: 100dvh;  /* this stays, keeps backdrop full screen */
-}
-.mobile-nav-btn .nav-btn__bubble {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  pointer-events: none;
-}
-
-.mobile-nav-btn span {
-  position: relative;
-  z-index: 1;
-}
-
-.mobile-nav-btn:hover { color: #fff !important; }
-.mobile-nav-btn.nav-btn--active { color: #44d0ff; }
-
-/* Tighten vertical overlap so the list isn't too long */
-.mobile-menu__list {
-  padding-top: calc(var(--nav-h) * 0.5); /* was var(--nav-h) + 1rem */
-}
-
-.mobile-menu__list li {
-  margin-top: -4rem;
-}
-.mobile-menu__list li:first-child {
-  margin-top: 0;
-}
-
-/* Portrait-mode navbar: keep it slim, no arc overflow */
-.navbar--portrait {
-  height: var(--nav-h);
-  overflow: visible;
-}.mobile-menu {
-  pointer-events: none;        /* closed state — pass through */
-}
-
-.mobile-menu--open {
-  pointer-events: auto;        /* open state — capture clicks */
-  max-height: 100dvh;
-}
-
-/* Also ensure the list items themselves are always clickable when open */
-.mobile-menu--open .mobile-nav-btn {
-  pointer-events: auto;
-}
-
-.therapist-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-.therapist-card img {
-  width: 80%;
-  max-width: 200px;       /* prevents giant images on desktop */
-  aspect-ratio: 1 / 1;    /* forces square */
-  object-fit: cover;      /* crops nicely */
-  border-radius: 50%;     /* makes it a circle */
-  
-  /* optional polish */
-  margin-bottom: 1rem;
-}
-
-
-
-
-body:not(.is-portrait) section {
-  scroll-margin-top: 30vh; /* adjust as needed for the navbar height */
-}
+/* ── Section divider ── */
 .section-divider {
   width: 100vw;
   position: relative;
   left: 50%;
   transform: translateX(-50%);
-  overflow: hidden;
+  overflow: visible;
   display: block;
- 
+  margin-top: -60px;
+  margin-bottom: -60px;
+  z-index: 2;
+  background: transparent;
 
 }
 
 .section-divider__img {
   width: 100%;
-  height: 100%;
+  height: auto;
   display: block;
   object-fit: cover;
-  z-index: 99;
-  mask-image: linear-gradient(
-    to right,
-    transparent 0%,
-    black 15%,
-    black 85%,
-    transparent 100%
-  );
-  -webkit-mask-image: linear-gradient(
-    to right,
-    transparent 0%,
-    black 15%,
-    black 85%,
-    transparent 100%
-  );
+  mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
 }
 
-.site-background {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-
-  background: linear-gradient(
-    to right,
-    #79c1ff 0%,
-    #fafffd 5%,
-    #fafffd 95%,
-    #79c1ff 100%
-  );
-}
-
-/* 1. The Container: Space the therapists apart */
+/* ── Therapist cards ── */
 .therapists {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: clamp(2rem, 5vw, 4rem); /* Responsive horizontal and vertical gap */
-  margin-top: 3rem;           /* Distance from the introductory text */
+  gap: clamp(2rem, 5vw, 4rem);
+  margin-top: 3rem;
 }
 
-/* 2. Individual Card: Standardizing width */
+/* ── Therapist cards ── */
 .therapist-card {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  max-width: 280px;           /* Prevents the text from getting too wide */
+  max-width: 280px;
+  width: 280px; /* fixed width so all cards match */
 }
 
-/* 3. The Name: Bring it closer to the description */
+.therapist-card img {
+  width: 80%;
+  max-width: 200px;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-bottom: 1rem; /* clean gap, no overlap */
+  position: relative;
+  z-index: 1;
+}
+
+.therapist-card__text {
+  background: rgba(199, 253, 255, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  border-radius: 1rem;
+  padding: 1.25rem 1rem;
+  width: 100%; /* fills the fixed card width */
+  box-shadow:
+    inset 0 1px 6px rgba(255, 255, 255, 0.6),
+    0 4px 18px rgba(100, 160, 220, 0.12);
+  margin-top: 0; /* remove the negative overlap */
+}
+
 .therapist-card h3 {
   font-family: var(--font-head);
-  margin-top: 0.5rem;         /* Space between image and name */
-  margin-bottom: 0.15rem;     /* Tight gap between name and description */
+  margin-top: 0.5rem;
+  margin-bottom: 0.15rem;
   font-size: 1.25rem;
+  color: #1a2535;           /* black/ink — overrides both light and dark section rules */
 }
 
-/* 4. The Description: Remove default browser margins */
 .therapist-card p {
   margin: 0;
   font-size: 0.95rem;
   line-height: 1.5;
-  color: var(--muted);
+  color: #09315f;           /* dark muted — readable over the glass */
 }
 
-@media (max-width: 768px) and (orientation: portrait) {
-  .section--hero {
-    padding-top: calc(var(--nav-h) + 0.25rem); /* was + 2rem, pull it up */
-    justify-content: flex-start;               /* don't center vertically */
-  }
+/* Override dark-section rules so text stays dark on the glass */
+.section--dark .therapist-card h3 { color: #1a2535; }
+.section--dark .therapist-card p  { color: #09315f; }
 
-  .hero-scene {
-    margin-top: -1rem;   /* nudge the whole scene up */
-  }
-
-  .hero-figure-wrap {
-    max-height: clamp(200px, 55vw, 340px);   /* shrink height so it fits higher */
-  }
-
-  .hero__headline {
-    transform: translateY(clamp(-80px, -8vw, -30px)); /* pull text up more aggressively */
-    font-size: clamp(0.8rem, 4vw, 1.4rem);            /* slightly larger on mobile */
-  }
-  @media (min-width: 380px) {
-    .hero-scene {
-      margin-top: -4rem;  /* raise it a bit more for mid-width portrait */
-    }
-    .hero__headline {
-      transform: translateY(clamp(-120px, -11vw, -50px));
-    }
-  }
-
-  @media (min-width: 650px) {
-    .hero-scene {
-      margin-top: 1rem;   /* lower it back down for wide portrait (tablets) */
-    }
-    .hero__headline {
-      transform: translateY(clamp(-60px, -6vw, -20px));
-    }
-  }
-
-}
-.section--dark .therapist-card h3 {
-  color: #fff;
-}
-
-.section--dark .therapist-card p {
-  color: rgba(255, 255, 255, 0.65);
-}
-.section--dark .therapist-card img {
-    width: 80%;
-  max-width: 200px;
-
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
-  border-radius: 50%;
-  margin-bottom: 1rem;
-}
-
+/* ── Modal ── */
 .modal-backdrop {
   position: fixed;
   inset: 0;
@@ -707,38 +589,138 @@ body:not(.is-portrait) section {
   cursor: pointer;
   color: var(--muted);
 }
-@media (min-height: 950px) {
-  .mobile-menu__list li {
-    margin-top: -0.4rem;  /* less negative = more spacing */
+
+/* ── Portrait mobile overrides ── */
+@media (max-width: 768px) and (orientation: portrait) {
+  .section--hero {
+    padding-top: calc(var(--nav-h) + 0.25rem);
+    justify-content: flex-start;
+  }
+
+  .hero-scene {
+    margin-top: -1rem;
+  }
+
+  .hero-figure-wrap {
+    max-height: clamp(200px, 55vw, 340px);
+  }
+
+  .hero__headline {
+    transform: translateY(clamp(-80px, -8vw, -30px));
+    font-size: clamp(0.8rem, 4vw, 1.4rem);
+  }
+
+  @media (min-width: 380px) {
+    .hero-scene      { margin-top: -4rem; }
+    .hero__headline  { transform: translateY(clamp(-120px, -11vw, -50px)); }
+  }
+
+  @media (min-width: 650px) {
+    .hero-scene      { margin-top: 1rem; }
+    .hero__headline  { transform: translateY(clamp(-60px, -6vw, -20px)); }
+  }
+}
+/* ── Nav bubble variations ── */
+
+
+.nav-btn__bubble {
+  position: absolute !important;
+  z-index: 0;
+}
+
+.nav-btn > span:not(.nav-btn__bubble) {
+  position: relative;
+  z-index: 2;
+}
+
+/* ── Company name ── */
+/* ── Company name (lives in hero, not navbar) ── */
+.section--hero {
+  position: relative; /* ensure positioning context */
+}
+
+.navbar__company {
+  position: absolute;
+  left: 1.25rem;
+  top: 1.25rem;
+  font-family: var(--font-nav);
+  display: flex;
+  flex-direction: row;        /* ← same line by default */
+  align-items: baseline;
+  gap: 0.5em;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+  letter-spacing: 0.03em;
+  pointer-events: none;
+  z-index: 1;
+  color:#fff
+ 
+}
+
+.navbar__company__name {
+  font-size: clamp(2rem, 3vw, 3rem);
+  font-weight: 600;
+  white-space: nowrap;
+  line-height: 1.1;
+}
+.navbar__company__sub {
+  font-size: clamp(0.9rem, 1.2vw, 1.3rem);  /* a touch smaller than the name */
+  font-style: italic;
+  font-weight: 400;
+  white-space: nowrap;
+  line-height: 1.1;
+}
+
+/* Portrait: centered, upper-than-centre (golden ratio ≈ 38% from top) */
+@media (max-width: 768px) and (orientation: portrait) {
+  .navbar__company {
+    flex-direction: column;   /* ← stacked in portrait */
+    left: 50%;
+    top: 15vh;
+    transform: translateX(-50%);
+    align-items: center;
+    text-align: center;
+  }
+
+  .navbar__company__name {
+    font-size: clamp(2rem, 10vw, 3.5rem);
+  }
+
+  .navbar__company__sub {
+    font-size: clamp(0.9rem, 4.5vw, 1.6rem);
   }
 }
 
-/* ── Section background images ── */
-.section--hero {
-  background-image: url('/3.heic');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+/* REMOVE the margin-right approach entirely, replace with: */
+
+.navbar__links {
+  transition: margin-top 0.5s ease;
+  margin-top: calc(12vh - (var(--nav-margin-collapse, 0) * 6vh));  /* default */
 }
 
-.section--light:nth-of-type(1),
-#about {
-  background-image: url('/2.heic');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+/* Short screens — phone landscape, small laptops */
+@media (max-height: 500px) {
+  .navbar__links {
+    margin-top: calc(18vh - (var(--nav-margin-collapse, 0) * 10vh));
+  }
+
+
+.section__inner {
+  margin-top: 20vh;
+
+}
 }
 
-#services {
-  background-image: url('/3.heic');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+/* Medium screens — most phones portrait */
+@media (max-height: 850px) and (min-height: 501px) {
+  .navbar__links {
+    margin-top: calc(14vh - (var(--nav-margin-collapse, 0) * 12vh));
+  }
 }
 
-#contact {
-  background-image: url('/4.heic');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+/* Tall screens — tablets portrait, large phones */
+@media (min-height: 1000px) {
+  .navbar__links {
+    margin-top: calc(8vh - (var(--nav-margin-collapse, 0) * 3vh));
+  }
 }
+
