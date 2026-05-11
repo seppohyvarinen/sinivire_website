@@ -251,9 +251,9 @@ function handleNavClick(id: SectionId) {
       {t.image?.asset?.url && (
         <img src={t.image.asset.url} alt={t.name} />
       )}
+      <h3>{t.name}</h3>           {/* ← moved here, between img and the glass box */}
       <div className="therapist-card__text">
-        <h3>{t.name}</h3>
-        <p>{t.description}</p>
+        <p>{t.description}</p>   {/* ← no more h3 inside */}
       </div>
     </div>
   ))}
@@ -276,8 +276,9 @@ function handleNavClick(id: SectionId) {
       {s.image?.asset?.url && (
         <img src={s.image.asset.url} alt={s.name} />
       )}
+              <h3>{s.name}</h3>
       <div className="therapist-card__text">
-        <h3>{s.name}</h3>
+
         <p>{s.description}</p>
       </div>
     </div>
