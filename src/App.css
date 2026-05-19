@@ -316,12 +316,12 @@ html, body {
   background: 
     linear-gradient(
       to bottom, 
-      #79c1ff 0%, 
+      #8dc7f9 0%, 
       rgba(121,193,255,0.6) 6%, 
       transparent 18%,        /* uneven top spill */
       transparent 78%,        
       rgba(121,193,255,0.4) 88%,
-      #79c1ff 100%
+      #8dc7f9 100%
     ),
     url('/3.jpg') center / cover no-repeat; 
 }
@@ -329,12 +329,12 @@ html, body {
   background: 
     linear-gradient(
       to bottom, 
-      #79c1ff 0%, 
+      #8dc7f9 0%, 
       rgba(121,193,255,0.5) 4%, 
       transparent 14%,
       transparent 82%,
       rgba(121,193,255,0.55) 91%,
-      #79c1ff 100%
+      #8dc7f9 100%
     ),
     url('/1.jpg') center / cover no-repeat; 
 }
@@ -342,12 +342,12 @@ html, body {
   background: 
     linear-gradient(
       to bottom, 
-      #79c1ff 0%, 
+      #8dc7f9 0%, 
       rgba(121,193,255,0.7) 5%,
       transparent 20%,        /* longer top fade */
       transparent 75%,        /* earlier bottom fade */
       rgba(121,193,255,0.45) 86%,
-      #79c1ff 100%
+      #8dc7f9 100%
     ),
     url('/2.jpeg') center / cover no-repeat; 
 }
@@ -355,12 +355,12 @@ html, body {
   background: 
     linear-gradient(
       to bottom, 
-      #79c1ff 0%, 
+      #8dc7f9 0%, 
       rgba(121,193,255,0.5) 3%,
       transparent 12%,
       transparent 85%,
       rgba(121,193,255,0.6) 93%,
-      #79c1ff 100%
+      #8dc7f9 100%
     ),
     url('/4.jpg') center / cover no-repeat; 
 }
@@ -726,3 +726,68 @@ section {
   }
 }
 
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  max-width: 640px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.modal__close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+
+.modal__title {
+  margin-bottom: 1.5rem;
+}
+
+.research-item {
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #eee;
+}
+
+.research-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.research-item__title {
+  margin-bottom: 0.5rem;
+}
+
+.research-item__abstract {
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
+  color: #444;
+  font-size: 0.95rem;
+  text-align: left;
+}
+
+
+.research-item__link {
+  font-weight: 400;
+  text-decoration: none;
+  color: blue;
+  text-decoration: underline;
+}

@@ -21,8 +21,15 @@ type Therapist = {
 
 type Service = {
   name?: string
-  description?: string
+  shortDescription?: string
+  longDescription?: string
   image?: any
+}
+
+type ResearchItem = {
+  title: string
+  abstract: string
+  link: string
 }
 
 interface PageContent {
@@ -33,6 +40,7 @@ interface PageContent {
   }
   services?: Service[]
   contact?: string
+  research?: ResearchItem[]
 }
 
 const NAV_LINKS: NavLink[] = [
@@ -87,12 +95,18 @@ export default function App() {
     },
     services[]{
       name,
-      description,
+      shortDescription,
+      longDescription,
       image{
         asset->{
           url
         }
       }
+    },
+    research[]{
+      title,
+      abstract,
+      link
     },
     contact
   }
@@ -264,7 +278,7 @@ function handleNavClick(id: SectionId) {
 
 <section id="services" className="section section--dark">
   <div className="section__inner">
-    <h2 className="section__title">Palvelut</h2>
+    <h2 className="section__title">Palvelumme</h2>
 
     <p className="section__body">
       {/* optional intro text if you add it to schema later */}
@@ -279,7 +293,7 @@ function handleNavClick(id: SectionId) {
               <h3>{s.name}</h3>
       <div className="therapist-card__text">
 
-        <p>{s.description}</p>
+        <p>{s.shortDescription}</p>
       </div>
     </div>
   ))}
@@ -301,14 +315,37 @@ function handleNavClick(id: SectionId) {
         </section>
       </main>
 
-      {researchOpen && (
+{researchOpen && (
   <div
     className="modal-backdrop"
     onClick={() => setResearchOpen(false)}
   >
     <div className="modal" onClick={e => e.stopPropagation()}>
-      <p>Tutkimusdata tänne</p>
-      <button onClick={() => setResearchOpen(false)}>✕</button>
+      <button className="modal__close" onClick={() => setResearchOpen(false)}>✕</button>
+      <h3 className="modal__title">Tutkimus</h3>
+
+      <div className="modal__content">
+        {content?.research && content.research.length > 0 ? (
+          content.research.map((item, i) => (
+            <div key={i} className="research-item">
+              <h5 className="research-item__title">{item.title}</h5>
+              <p className="research-item__abstract">{item.abstract}</p>
+              {item.link && (
+                <a
+                  href={item.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="research-item__link"
+                >
+                  Lue lisää →
+                </a>
+              )}
+            </div>
+          ))
+        ) : (
+          <p>Ei tutkimuksia saatavilla.</p>
+        )}
+      </div>
     </div>
   </div>
 )}

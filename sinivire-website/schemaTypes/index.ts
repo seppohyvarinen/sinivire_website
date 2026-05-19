@@ -32,15 +32,9 @@ const page = defineType({
             {
               type: 'object',
               title: 'Therapist',
-              preview: {
-                select: { title: 'name', media: 'image' },
-              },
+              preview: { select: { title: 'name', media: 'image' } },
               fields: [
-                defineField({
-                  name: 'name',
-                  title: 'Name',
-                  type: 'string',
-                }),
+                defineField({ name: 'name', title: 'Name', type: 'string' }),
                 defineField({
                   name: 'image',
                   title: 'Photo',
@@ -69,26 +63,61 @@ const page = defineType({
         {
           type: 'object',
           title: 'Service',
-          preview: {
-            select: { title: 'name', media: 'image' },
-          },
+          preview: { select: { title: 'name', media: 'image' } },
           fields: [
+            defineField({ name: 'name', title: 'Service name', type: 'string' }),
             defineField({
-              name: 'name',
-              title: 'Service name',
+              name: 'shortDescription',
+              title: 'Short description',
+              description: 'A brief summary shown in cards or previews (1–2 sentences)',
               type: 'string',
             }),
             defineField({
-              name: 'description',
-              title: 'Service description',
+              name: 'longDescription',
+              title: 'Long description',
+              description: 'Full details shown on the service page',
               type: 'text',
-              rows: 3,
+              rows: 5,
             }),
             defineField({
               name: 'image',
               title: 'Service image',
               type: 'image',
               options: { hotspot: true },
+            }),
+          ],
+        },
+      ],
+    }),
+
+    // ── RESEARCH SECTION ──────────────────────────
+    defineField({
+      name: 'research',
+      title: 'Research',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          title: 'Research item',
+          preview: { select: { title: 'title' } },
+          fields: [
+            defineField({
+              name: 'title',
+              title: 'Title',
+              type: 'string',
+            }),
+            defineField({
+              name: 'abstract',
+              title: 'Abstract',
+              type: 'text',
+              rows: 6,
+            }),
+            defineField({
+              name: 'link',
+              title: 'Link',
+              description: 'URL to the full research paper or resource',
+              type: 'url',
+              validation: (Rule) => Rule.uri({ scheme: ['http', 'https'] }),
             }),
           ],
         },
@@ -114,5 +143,3 @@ const page = defineType({
 })
 
 export const schemaTypes = [page]
-
-console.log('Schema loaded, fields:', page.fields.map(f => f.name))
