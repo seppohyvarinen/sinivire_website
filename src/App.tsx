@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { client } from "./sanityClient.ts"
 import "./App.css"
 import logo from "./assets/bubblez.png"
@@ -32,6 +32,8 @@ type ResearchItem = {
   link: string
 }
 
+
+
 interface PageContent {
   hero?: string
   about?: {
@@ -62,6 +64,7 @@ export default function App() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [isPortrait, setIsPortrait] = useState(false)
   const [researchOpen, setResearchOpen] = useState(false)
+  const [expandedService, setExpandedService] = useState<number | null>(null)
 
   // Detect portrait phone
   useEffect(() => {
@@ -280,24 +283,33 @@ function handleNavClick(id: SectionId) {
   <div className="section__inner">
     <h2 className="section__title">Palvelumme</h2>
 
-    <p className="section__body">
-      {/* optional intro text if you add it to schema later */}
-    </p>
-
-<div className="therapists">
-  {content?.services?.map((s, i) => (
-    <div key={i} className="therapist-card">
-      {s.image?.asset?.url && (
-        <img src={s.image.asset.url} alt={s.name} />
-      )}
-              <h3>{s.name}</h3>
-      <div className="therapist-card__text">
-
-        <p>{s.shortDescription}</p>
-      </div>
+    <div className="therapists">
+      {content?.services?.map((s, i) => (
+        <div key={i} className="therapist-card">
+          {s.image?.asset?.url && (
+            <img src={s.image.asset.url} alt={s.name} />
+          )}
+          <h3>{s.name}</h3>
+<div className="therapist-card__text">
+  <div className={`service-body ${expandedService === i ? "service-body--open" : ""}`}>
+    <div className="service-body__inner">
+      <p className="service-body__short">{s.shortDescription}</p>
+      <p className="service-body__long">{s.longDescription}</p>
     </div>
-  ))}
+  </div>
+  {expandedService === i ? (
+    <button className="service-toggle" onClick={() => setExpandedService(null)}>
+      Näytä vähemmän ▲
+    </button>
+  ) : (
+    <button className="service-toggle" onClick={() => setExpandedService(i)}>
+      Lue lisää... ▼
+    </button>
+  )}
 </div>
+        </div>
+      ))}
+    </div>
   </div>
 </section>
 

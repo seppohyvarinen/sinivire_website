@@ -791,3 +791,116 @@ section {
   color: blue;
   text-decoration: underline;
 }
+
+.modal {
+  background: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  max-width: 640px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;        /* ← already there, but make sure this is set */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal__content {
+  overflow-y: auto;
+  flex: 1;
+}
+
+.service-toggle {
+  display: inline-block;
+  margin-top: 0.6rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #2563eb;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  padding: 0;
+  font-family: var(--font-body);
+}
+
+.service-toggle:hover {
+  color: #1d4ed8;
+}
+
+/* ── Service expand animation ── */
+.service-body {
+  display: grid;
+  grid-template-rows: 1fr;   /* always show short desc height by default */
+  transition: grid-template-rows 0.4s ease;
+  overflow: hidden;
+}
+
+.service-body__inner {
+  overflow: hidden;
+  position: relative;
+}
+
+/* Short description */
+.service-body__short {
+  transition: opacity 0.25s ease, max-height 0.4s ease;
+  max-height: 200px;
+  opacity: 1;
+  overflow: hidden;
+}
+
+/* Long description — hidden by default */
+.service-body__long {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.45s ease, opacity 0.3s ease 0.1s;
+  margin: 0;
+}
+
+/* Open state */
+.service-body--open .service-body__short {
+  max-height: 0;
+  opacity: 0;
+  transition: opacity 0.15s ease, max-height 0.3s ease;
+}
+
+.service-body--open .service-body__long {
+  max-height: 600px;   /* larger than any realistic content */
+  opacity: 1;
+  transition: max-height 0.5s ease, opacity 0.3s ease 0.15s;
+}
+
+/* Remove old generic transition */
+.therapist-card__text {
+  transition: none;
+}
+
+/* ── Fix title being too low ── */
+#services .section__inner {
+  margin-top: 4vh;   /* override the generic 10vh */
+}
+
+/* ── Cards align to top so expanding one doesn't push siblings ── */
+.therapists {
+  align-items: flex-start;   /* add this */
+}
+
+/* ── Let services section grow freely beyond viewport ── */
+#services {
+  min-height: 100dvh;
+  height: auto;          /* explicit: don't constrain */
+  background:
+    linear-gradient(
+      to bottom,
+      #8dc7f9 0%,
+      rgba(121,193,255,0.7) 5%,
+      transparent 20%,
+      transparent 60%,      /* start fade-out earlier */
+      rgba(121,193,255,0.6) 78%,
+      #8dc7f9 88%,
+      #8dc7f9 100%          /* solid blue from 88% onward covers any overflow */
+    ),
+    url('/2.jpeg') center top / cover no-repeat;  /* pin to top so photo doesn't jump */
+}
