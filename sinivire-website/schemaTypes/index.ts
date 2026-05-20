@@ -2,62 +2,21 @@ import { defineType, defineField } from 'sanity'
 
 const page = defineType({
   name: 'page',
-  title: 'Page content',
+  title: 'Sivun sisältö',
   type: 'document',
   fields: [
-    defineField({
-      name: 'hero',
-      title: 'Main headline',
-      description: 'The big text visitors see first',
-      type: 'string',
-    }),
 
-    // ── ABOUT SECTION ──────────────────────────
-    defineField({
-      name: 'about',
-      title: 'About section',
-      type: 'object',
-      fields: [
-        defineField({
-          name: 'text',
-          title: 'About us text',
-          type: 'text',
-          rows: 4,
-        }),
-        defineField({
-          name: 'therapists',
-          title: 'Therapists',
-          type: 'array',
-          of: [
-            {
-              type: 'object',
-              title: 'Therapist',
-              preview: { select: { title: 'name', media: 'image' } },
-              fields: [
-                defineField({ name: 'name', title: 'Name', type: 'string' }),
-                defineField({
-                  name: 'image',
-                  title: 'Photo',
-                  type: 'image',
-                  options: { hotspot: true },
-                }),
-                defineField({
-                  name: 'description',
-                  title: 'Description',
-                  type: 'text',
-                  rows: 3,
-                }),
-              ],
-            },
-          ],
-        }),
-      ],
-    }),
-
-    // ── SERVICES SECTION ──────────────────────────
+defineField({
+  name: 'title',
+  title: 'Dokumentin nimi',
+  type: 'string',
+  initialValue: 'Sinivire Oy — sivun sisältö',
+  readOnly: true,
+}),
+        // ── SERVICES SECTION ──────────────────────────
     defineField({
       name: 'services',
-      title: 'Services',
+      title: 'Palvelut',
       type: 'array',
       of: [
         {
@@ -90,10 +49,74 @@ const page = defineType({
       ],
     }),
 
+    // ── ABOUT SECTION ──────────────────────────
+    defineField({
+      name: 'about',
+      title: 'Keitä Olemme? -osio',
+      type: 'object',
+      fields: [
+        defineField({
+          name: 'text',
+          title: 'Valinnainen yleinen kuvaus',
+          type: 'text',
+          rows: 4,
+        }),
+        defineField({
+          name: 'therapists',
+          title: 'Terapeuttien esittelyt',
+          type: 'array',
+          of: [
+            {
+              type: 'object',
+              title: 'Therapist',
+              preview: { select: { title: 'name', media: 'image' } },
+              fields: [
+                defineField({ name: 'name', title: 'Name', type: 'string' }),
+                defineField({
+                  name: 'image',
+                  title: 'Photo',
+                  type: 'image',
+                  options: { hotspot: true },
+                }),
+                defineField({
+                  name: 'description',
+                  title: 'Description',
+                  type: 'text',
+                  rows: 3,
+                }),
+              ],
+            },
+          ],
+        }),
+      ],
+    }),
+    // ── APPLYING SECTION ──────────────────────────
+defineField({
+  name: 'applying',
+  title: 'Hakeminen -osio',
+  type: 'object',
+  fields: [
+    defineField({
+      name: 'applicationProcess',
+      title: 'Hakuprosessi (Application process)',
+      type: 'text',
+      rows: 6,
+    }),
+    defineField({
+      name: 'therapyGoals',
+      title: 'Terapian tavoitteet (Therapy goals)',
+      type: 'text',
+      rows: 6,
+    }),
+  ],
+}),
+
+
+
     // ── RESEARCH SECTION ──────────────────────────
     defineField({
       name: 'research',
-      title: 'Research',
+      title: 'Tutkimus -osio',
       type: 'array',
       of: [
         {
@@ -124,21 +147,32 @@ const page = defineType({
       ],
     }),
 
-    // ── HERO IMAGE ──────────────────────────
-    defineField({
-      name: 'heroImage',
-      title: 'Hero image',
-      description: 'Main background or feature image',
-      type: 'image',
-      options: { hotspot: true },
-    }),
-
     // ── CONTACT ──────────────────────────
+// ── CONTACT ──────────────────────────
+defineField({
+  name: 'contact',
+  title: 'Yhteystiedot',
+  type: 'object',
+  fields: [
     defineField({
-      name: 'contact',
-      title: 'Contact email',
+      name: 'email',
+      title: 'Sähköposti',
       type: 'string',
     }),
+    defineField({
+      name: 'instagram',
+      title: 'Instagram',
+      description: 'Full URL, e.g. https://instagram.com/sinivire',
+      type: 'url',
+      validation: (Rule) => Rule.uri({ scheme: ['http', 'https'] }),
+    }),
+    defineField({
+      name: 'address',
+      title: 'Katuosoite',
+      type: 'string',
+    }),
+  ],
+}),
   ],
 })
 

@@ -94,16 +94,16 @@ html, body {
   align-items: center;
   justify-content: center;
   position: relative;
-  width: clamp(110px, 16vw, 200px);   /* narrower than before */
-  height: clamp(44px, 7vw, 72px);     /* flat pill height, not 300px */
+  width: clamp(151px, 17vw, 220px);   /* narrower than before */
+  height: clamp(48px, 8vw, 78px);     /* flat pill height, not 300px */
   padding: 0 1rem;
   background: none;
   border: none;
   cursor: pointer;
   overflow: visible;
   font-family: var(--font-nav);
-  font-size: clamp(1.1rem, 1.4vw, 1.6rem);
-  font-weight: 600;
+  font-size: clamp(1.15rem, 1.5vw, 1.65rem);
+  font-weight: 550;
   letter-spacing: 0.04em;
   color: #ffffff;
   text-shadow:
@@ -114,7 +114,7 @@ html, body {
   transition: transform 0.4s ease-out, color 0.4s ease-out, scale 0.4s ease-out;
 }
 
-.nav-btn--active { color: #72d3ff; }
+.nav-btn--active { color: #72f3ff; }
 .nav-btn:hover   { color: #a0fff7 !important; scale: 1.1; transition: transform 0.2s ease-out, scale 0.2s ease-out; z-index: 10; }
 .nav-btn__bubble {
   position: absolute;
@@ -294,7 +294,7 @@ html, body {
 }
 
 .section__inner {
-  margin-top: 10vh;
+  margin-top: clamp(8vh, calc(6vh + 8vw), 22vh);
   max-width: 720px;
   width: 100%;
   padding: 1rem;
@@ -879,7 +879,7 @@ section {
 
 /* ── Fix title being too low ── */
 #services .section__inner {
-  margin-top: 4vh;   /* override the generic 10vh */
+  margin-top: clamp(8vh, calc(6vh + 8vw), 22vh);  /* override the generic 10vh */
 }
 
 /* ── Cards align to top so expanding one doesn't push siblings ── */
@@ -903,4 +903,65 @@ section {
       #8dc7f9 100%          /* solid blue from 88% onward covers any overflow */
     ),
     url('/2.jpeg') center top / cover no-repeat;  /* pin to top so photo doesn't jump */
+}
+
+/* ── Applying section — same bg as #about ── */
+#applying {
+  background:
+    linear-gradient(
+      to bottom,
+      #8dc7f9 0%,
+      rgba(121,193,255,0.5) 4%,
+      transparent 14%,
+      transparent 82%,
+      rgba(121,193,255,0.55) 91%,
+      #8dc7f9 100%
+    ),
+    url('/1.jpg') center / cover no-repeat;
+  height: auto;
+  min-height: 100dvh;
+}
+
+/* Override section__inner for applying — left-aligned, wider */
+.section__inner--applying {
+  max-width: 640px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.applying-block__title {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+/* Glass bubble — matches therapist-card__text style */
+.applying-bubble {
+  background: rgba(143, 251, 255, 0.265);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  border-radius: 1rem;
+  padding: 1.25rem 1.5rem;
+  box-shadow:
+    inset 0 1px 6px rgba(255, 255, 255, 0.6),
+    0 4px 18px rgba(100, 160, 220, 0.12);
+  width: 100%;
+}
+
+.applying-bubble p {
+  margin: 0;
+  font-size: 0.975rem;
+  line-height: 1.75;
+  color: #09315f;
+  white-space: pre-line; /* preserves line breaks from Sanity text fields */
+}
+
+/* Responsive: full width on small screens */
+@media (max-width: 680px) {
+  .section__inner--applying {
+    max-width: 100%;
+    padding: 0 1rem;
+  }
 }

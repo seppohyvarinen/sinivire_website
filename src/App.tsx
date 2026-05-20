@@ -6,7 +6,7 @@ import { HeroBubbles } from "./components/HeroBubbles"
 import { SectionDivider } from "./components/SectionDivider"
 import { Background } from "./components/BackGround.tsx"
 
-type SectionId = "hero" | "about" | "services" | "contact" | "research"
+type SectionId = "hero" | "about" | "services" | "contact" | "research" | "applying"
 
 interface NavLink {
   label: string
@@ -40,15 +40,23 @@ interface PageContent {
     text?: string
     therapists?: Therapist[]
   }
+  applying?: {
+  applicationProcess?: string
+  therapyGoals?: string
+}
   services?: Service[]
-  contact?: string
+  contact?: {
+  email?: string
+  instagram?: string
+  address?: string
+}
   research?: ResearchItem[]
 }
 
 const NAV_LINKS: NavLink[] = [
-  { label: "Tervetuloa",   id: "hero"     },
+  { label: "Palvelut",   id: "services"     },
   { label: "Keitä olemme?", id: "about"   },
-  { label: "Palvelut",     id: "services" },
+  { label: "Musiikkiterapiaan hakeminen", id: "applying" },
   { label: "Tutkimus",     id: "research" },
   { label: "Yhteystiedot", id: "contact"  },
 ]
@@ -78,7 +86,7 @@ export default function App() {
     return () => mq.removeEventListener("change", update)
   }, [])
 
-  // Fetch from Sanity
+  // Fetch from Sanity LISÄÄ UUSI SARAKE Näin haet terapiaan.. Terapian tavoitteet. ratkaissut...
   useEffect(() => {
     client
       .fetch<PageContent>(`
@@ -106,12 +114,20 @@ export default function App() {
         }
       }
     },
+      applying{
+    applicationProcess,
+    therapyGoals
+  },
     research[]{
       title,
       abstract,
       link
     },
-    contact
+    contact{
+  email,
+  instagram,
+  address
+},
   }
 `)
       .then((data) => {
@@ -253,32 +269,6 @@ function handleNavClick(id: SectionId) {
   </div>
 </section>
 
-<section id="about" className="section section--light">
- 
-  <div className="section__inner">
-    <h2 className="section__title">Terapeuttimme</h2>
-
-    <p className="section__body">
-      {content?.about?.text ?? ""}
-    </p>
-
-<div className="therapists">
-  {content?.about?.therapists?.map((t, i) => (
-    <div key={i} className="therapist-card">
-      {t.image?.asset?.url && (
-        <img src={t.image.asset.url} alt={t.name} />
-      )}
-      <h3>{t.name}</h3>           {/* ← moved here, between img and the glass box */}
-      <div className="therapist-card__text">
-        <p>{t.description}</p>   {/* ← no more h3 inside */}
-      </div>
-    </div>
-  ))}
-</div>
-  </div>
-</section>
-
-
 <section id="services" className="section section--dark">
   <div className="section__inner">
     <h2 className="section__title">Palvelumme</h2>
@@ -313,18 +303,74 @@ function handleNavClick(id: SectionId) {
   </div>
 </section>
 
+<section id="about" className="section section--light">
+ 
+  <div className="section__inner">
+    <h2 className="section__title">Terapeuttimme</h2>
 
-        <section id="contact" className="section section--light">
-          <div className="section__inner">
-            <h2 className="section__title">Yhteystiedot</h2>
-            <p className="section__body">
-              
-              <a href={`mailto:${content?.contact ?? ""}`} className="contact-link">
-                {content?.contact ?? "Loading…"}
-              </a>
-            </p>
-          </div>
-        </section>
+    <p className="section__body">
+      {content?.about?.text ?? ""}
+    </p>
+
+<div className="therapists">
+  {content?.about?.therapists?.map((t, i) => (
+    <div key={i} className="therapist-card">
+      {t.image?.asset?.url && (
+        <img src={t.image.asset.url} alt={t.name} />
+      )}
+      <h3>{t.name}</h3>           {/* ← moved here, between img and the glass box */}
+      <div className="therapist-card__text">
+        <p>{t.description}</p>   {/* ← no more h3 inside */}
+      </div>
+    </div>
+  ))}
+</div>
+  </div>
+</section>
+<section id="applying" className="section section--light">
+  <div className="section__inner section__inner--applying">
+    <div className="applying-block">
+      <h2 className="section__title applying-block__title">Hakuprosessi</h2>
+      <div className="applying-bubble">
+        <p>{content?.applying?.applicationProcess ?? ""}</p>
+      </div>
+    </div>
+    <div className="applying-block">
+      <h2 className="section__title applying-block__title">Terapian tavoitteet</h2>
+      <div className="applying-bubble">
+        <p>{content?.applying?.therapyGoals ?? ""}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+<section id="contact" className="section section--light">
+  <div className="section__inner">
+    <h2 className="section__title">Yhteystiedot</h2>
+    <div className="applying-bubble" style={{ maxWidth: 480, margin: '0 auto', textAlign: 'left' }}>
+      {content?.contact?.email && (
+        <p>
+          <a href={`mailto:${content.contact.email}`} className="contact-link">
+            {content.contact.email}
+          </a>
+        </p>
+      )}
+      {content?.contact?.instagram && (
+        <p>
+          <a href={content.contact.instagram} target="_blank" rel="noopener noreferrer" className="contact-link">
+            Instagram
+          </a>
+        </p>
+      )}
+      {content?.contact?.address && (
+        <p>{content.contact.address}</p>
+      )}
+    </div>
+  </div>
+</section>
       </main>
 
 {researchOpen && (
