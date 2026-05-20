@@ -86,6 +86,18 @@ export default function App() {
     return () => mq.removeEventListener("change", update)
   }, [])
 
+  // Add this useEffect to lock/unlock body scroll
+useEffect(() => {
+  if (researchOpen) {
+    document.body.style.overflow = "hidden"
+  } else {
+    document.body.style.overflow = ""
+  }
+  return () => {
+    document.body.style.overflow = ""
+  }
+}, [researchOpen])
+
   // Fetch from Sanity LISÄÄ UUSI SARAKE Näin haet terapiaan.. Terapian tavoitteet. ratkaissut...
   useEffect(() => {
     client
