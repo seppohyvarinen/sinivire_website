@@ -264,14 +264,14 @@ function handleNavClick(id: SectionId) {
         )}
       </nav>
       {/* Back to top button */}
-{active !== "hero" && (
+{scrolled && (
   <button
     className="back-to-top"
     onClick={() => scrollTo("hero")}
     aria-label="Takaisin ylös"
   >
     <span className="nav-btn__bubble" />
-    <span>↑ Takaisin ylös</span>
+    <span>↑</span>
   </button>
 )}
 

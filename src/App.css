@@ -969,17 +969,17 @@ section {
 /* ── Back to top button ── */
 .back-to-top {
   position: fixed;
-  top: calc(var(--nav-h) + 0.75rem);
-  right: 1.25rem;
+  top: calc(var(--nav-h) + clamp(30px, 5vw, 50px));
+  left: 1.25rem;
   z-index: 150;
 
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  position: fixed;
 
-  width: clamp(120px, 14vw, 170px);
+  width: clamp(36px, 5vw, 52px);
   height: clamp(36px, 5vw, 52px);
+  border-radius: 50%;
 
   background: none;
   border: none;
@@ -987,9 +987,8 @@ section {
   overflow: visible;
 
   font-family: var(--font-nav);
-  font-size: clamp(0.85rem, 1.1vw, 1.15rem);
+  font-size: clamp(1rem, 1.4vw, 1.4rem);
   font-weight: 550;
-  letter-spacing: 0.04em;
   color: #ffffff;
   text-shadow:
     -1px -1px 0 rgba(0,0,0,0.4),
@@ -1003,18 +1002,15 @@ section {
 .back-to-top .nav-btn__bubble {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.22);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.10);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border: 1.5px solid rgba(255, 255, 255, 0.7);
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
   box-shadow:
-    inset 0 2px 8px rgba(255, 255, 255, 0.55),
-    inset 0 -2px 6px rgba(180, 210, 240, 0.2),
-    0 4px 18px rgba(100, 160, 220, 0.15);
+    inset 0 2px 8px rgba(255, 255, 255, 0.25),
+    0 4px 18px rgba(100, 160, 220, 0.10);
+  pointer-events: none;
 }
 
 .back-to-top > span:not(.nav-btn__bubble) {
@@ -1023,19 +1019,17 @@ section {
 }
 
 .back-to-top:hover {
-  color: #a0fff7 !important;
+  color: #a0fff7;
   scale: 1.1;
   transition: scale 0.2s ease-out;
 }
 
-/* Portrait: smaller, sits top-right under the burger */
 @media (max-width: 768px) and (orientation: portrait) {
   .back-to-top {
-    top: calc(var(--nav-h) * 0.2);
-    right: calc(clamp(110px, 16vw, 200px) + 1.5rem);
-    width: clamp(100px, 28vw, 140px);
-    height: clamp(34px, 9vw, 48px);
-    font-size: clamp(0.75rem, 3.5vw, 1rem);
+    top: calc(var(--nav-h) * 0.22);
+    left: 1rem;
+    width: clamp(32px, 8vw, 44px);
+    height: clamp(32px, 8vw, 44px);
   }
 }
 
